@@ -1,17 +1,4 @@
-export type SiteConfig = {
-  name: string;
-  description: string;
-  url: string;
-  ogImage: string;
-  links: {
-    twitter: string;
-    github: string;
-  };
-  contactEmail: string;
-  industry: string;
-};
-
-export const siteConfig: SiteConfig = {
+export const siteConfig = {
   name: "Rezervasyon",
   description: "A customizable reservation platform for appointment-based businesses",
   url: "https://rezervasyon.app",
@@ -21,5 +8,6 @@ export const siteConfig: SiteConfig = {
     github: "https://github.com/rezervasyon",
   },
   contactEmail: "contact@rezervasyon.app",
-  industry: "Car Wash"
-}; 
+  industry: "Car Wash",
+  industryId: "79f028e9-00fc-46cd-b278-9a2bf1eaedd1"
+} as const;

@@ -17,13 +17,15 @@ export default async function HomePage({ searchParams }: { searchParams: { code?
   
   // Fetch popular businesses from Supabase
   const supabase = await createServerClient();
-  const { data: popularBusinesses } = await supabase
+  const { data: popularBusinesses,error: popularBusinessesError } = await supabase
     .from("businesses")
     .select("*")
     .eq("is_active", true)
-    .eq("industry", siteConfig.industry)
+    .eq("industry_id", siteConfig.industryId)
     .order("rating", { ascending: false })
     .limit(4);
+
+  console.log({popularBusinesses, popularBusinessesError});
 
   return (
     <>

@@ -7,16 +7,19 @@ import { getBusinesses } from "@/lib/db";
 import Link from "next/link";
 
 interface SearchPageProps {
-  searchParams: {
+  searchParams: Promise<{
     location?: string;
     rating?: string;
     price?: string;
     page?: string;
-  };
+  }>;
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const page = Number(searchParams.page) || 1;
+  // Await searchParams before using its properties
+  const params = await searchParams;
+  
+  const page = Number(params.page) || 1;
   const limit = 12;
   const offset = (page - 1) * limit;
   
@@ -24,14 +27,14 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const { businesses, count } = await getBusinesses({
     limit,
     offset,
-    location: searchParams.location || null,
-    industry: siteConfig.industry,
-    search: searchParams.location || null, // Also search by location text
+    location: params.location || null,
+    industry: siteConfig.industryId,
+    search: params.location || null, // Also search by location text
   });
   
   const totalPages = Math.ceil(count / limit);
   
-  if (searchParams.location) {
+  if (params.location) {
     // Implement the location filter logic here
   }
 
@@ -46,14 +49,14 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             <label className="text-sm font-medium mb-1 block">Location</label>
             <Input 
               name="location" 
-              defaultValue={searchParams.location || ""} 
+              defaultValue={params.location || ""} 
               placeholder="Enter location..."
             />
           </div>
           
           <div className="space-y-2">
             <label htmlFor="rating" className="text-sm font-medium">Rating</label>
-            <Select name="rating" defaultValue={searchParams.rating || "all"}>
+            <Select name="rating" defaultValue={params.rating || "all"}>
               <SelectTrigger id="rating">
                 <SelectValue placeholder="Any Rating" />
               </SelectTrigger>
@@ -68,7 +71,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           
           <div className="space-y-2">
             <label htmlFor="price" className="text-sm font-medium">Price Range</label>
-            <Select name="price" defaultValue={searchParams.price || "all"}>
+            <Select name="price" defaultValue={params.price || "all"}>
               <SelectTrigger id="price">
                 <SelectValue placeholder="Any Price" />
               </SelectTrigger>
@@ -94,7 +97,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <div className="mb-6">
         <p className="text-muted-foreground">
           {count} {count === 1 ? 'result' : 'results'} for {siteConfig.industry} services
-          {searchParams.location ? ` in "${searchParams.location}"` : ''}
+          {params.location ? ` in "${params.location}"` : ''}
         </p>
       </div>
       
@@ -158,7 +161,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   href={{
                     pathname: '/search',
                     query: {
-                      ...searchParams,
+                      ...params,
                       page: page - 1,
                     },
                   }}
@@ -178,7 +181,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   href={{
                     pathname: '/search',
                     query: {
-                      ...searchParams,
+                      ...params,
                       page: page + 1,
                     },
                   }}

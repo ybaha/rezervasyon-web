@@ -33,7 +33,6 @@ export async function getBusinesses({
   limit = 10, 
   offset = 0, 
   industry = null,
-  location = null,
   search = null
 }: {
   limit?: number;
@@ -50,12 +49,9 @@ export async function getBusinesses({
   
   // Apply filters
   if (industry && industry !== 'all') {
-    query = query.eq('industry', industry);
+    query = query.eq('industry_id', industry);
   }
   
-  if (location) {
-    query = query.ilike('location', `%${location}%`);
-  }
   
   if (search) {
     query = query.or(`name.ilike.%${search}%, description.ilike.%${search}%`);
@@ -65,6 +61,8 @@ export async function getBusinesses({
   const { data, error, count } = await query
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
+
+  console.log({data, error});
     
   if (error) {
     console.error('Error fetching businesses:', error.message);
