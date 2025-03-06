@@ -54,7 +54,7 @@ export default async function ReservationsPage({ searchParams }: ReservationsPag
   let query = supabase
     .from('reservations')
     .select(`
-      *
+      *, user_profiles(*)
     `, { count: 'exact' })
     .eq('business_id', activeBusiness.id);
   
