@@ -30,6 +30,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     location: params.location || null,
     industry: siteConfig.industryId,
     search: params.location || null, // Also search by location text
+    price: params.price || null,
   });
   
   const totalPages = Math.ceil(count / limit);

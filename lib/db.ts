@@ -33,13 +33,15 @@ export async function getBusinesses({
   limit = 10, 
   offset = 0, 
   industry = null,
-  search = null
+  search = null,
+  price = null
 }: {
   limit?: number;
   offset?: number;
   industry?: string | null;
   location?: string | null;
   search?: string | null;
+  price?: string | null;
 } = {}) {
   const supabase = await createServerClient();
   
@@ -51,7 +53,10 @@ export async function getBusinesses({
   if (industry && industry !== 'all') {
     query = query.eq('industry_id', industry);
   }
-  
+
+  if (price) {
+    query = query.eq('price_level', Number(price));
+  }
   
   if (search) {
     query = query.or(`name.ilike.%${search}%, description.ilike.%${search}%`);
